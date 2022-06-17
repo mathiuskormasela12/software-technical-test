@@ -17,4 +17,8 @@ export const ContainerStyles = styled.div<IContainerProps>`
 			width: ${size}%;
 		`;
   }}
+
+	@media (max-width: 1024px) {
+		width: 90%;
+	}
 `;

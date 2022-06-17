@@ -102,3 +102,11 @@ export const FormRow = styled.div`
 	display: flex;
 	flex-direction: column;
 `;
+
+export const ErrorMessage = styled.p`
+	color: ${Colors.danger};
+	font-size: 1rem;
+	text-align: center;
+	margin-bottom: 1rem;
+	font-weight: bold;
+`;

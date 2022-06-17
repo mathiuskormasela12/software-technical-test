@@ -7,3 +7,7 @@ export * from './IJoinBody';
 export * from './IContainerProps';
 export * from './IHeadProps';
 export * from './IFormSectionProps';
+export * from './IMessageFieldProps';
+export * from './IChatBubbleProps';
+export * from './IMessageReduxStates';
+export * from './IMessage';
