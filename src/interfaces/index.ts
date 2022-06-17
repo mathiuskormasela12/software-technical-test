@@ -6,3 +6,4 @@ export * from './IAuthReduxAction';
 export * from './IJoinBody';
 export * from './IContainerProps';
 export * from './IHeadProps';
+export * from './IFormSectionProps';
