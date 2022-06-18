@@ -1,5 +1,5 @@
-# React + Typescript + Redux Boilerplate
-This is a boilerplate frontend project written in React Js, Typescript and Redux
+# Technical Test
+This is a simple group chat website was written in React Js, Typescript and Redux
 
 ## How To Run This App ?
 - Make sure you had clone this repo
@@ -8,8 +8,8 @@ This is a boilerplate frontend project written in React Js, Typescript and Redux
 
 ## Preview Project
 
-### Main Screen
+### Join Chat Room Screen
 [<img src="screenshoots/First-Screen.png" />](screenshoots/First-Screen.png)
 
-### Secondary Screen
+### Chat Room Screen
 [<img src="screenshoots/First-Screen.png" />](screenshoots/First-Screen.png)

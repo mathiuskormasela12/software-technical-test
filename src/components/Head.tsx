@@ -12,7 +12,7 @@ export const Head: React.FC<IHeadProps> = (props) => {
       <Helmet>
         <meta charSet="utf-8" />
         <title>
-          My React Boilerplate |
+          Group Chat |
           {' '}
           {title}
         </title>
