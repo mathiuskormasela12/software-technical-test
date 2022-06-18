@@ -7,7 +7,6 @@ export const InputContainer = styled.div`
 	outline: none;
 	border: 1px solid ${Colors.secondLigth};
 	background-color: ${Colors.light};
-	width: 22rem;
 	height: 3.5rem;
 	border-radius: 25px;
 	font-size: 1rem;
@@ -17,12 +16,14 @@ export const InputContainer = styled.div`
 `;
 
 export const InputLeft = styled.div`
-	width: 82%;
+	// width: 90%;
 	height: 100%;
+	flex: 5;
 `;
 
 export const InputRight = styled.div`
-	width: 18%;
+	flex: 1;
+	// width: 10%;
 	height: 100%;
 	display: flex;
 	align-items: center;

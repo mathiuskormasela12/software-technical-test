@@ -1,6 +1,6 @@
 // ========== ChatRoom
 // import all modules
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import jwtDecode from 'jwt-decode';
@@ -30,6 +30,7 @@ import {
 export const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const bottom = useRef<HTMLDivElement>(null);
   const [state, setState] = useState({
     message: '',
     fetchMessages: false,
@@ -63,6 +64,10 @@ export const ChatRoom: React.FC = () => {
     }
   };
 
+  const scrollToBottom = () => {
+    bottom.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const handleSendMessage = async () => {
     if (state.message !== '' && userData.roomId && userData.id) {
       try {
@@ -76,6 +81,7 @@ export const ChatRoom: React.FC = () => {
           ...current,
           message: '',
         }));
+        scrollToBottom();
       } catch (err: any) {
         // eslint-disable-next-line no-console
         console.log(err.message);
@@ -104,11 +110,13 @@ export const ChatRoom: React.FC = () => {
   useEffect(() => {
     if (messages.length < 1) {
       getAllMessages();
+      scrollToBottom();
     }
   }, []);
 
   useEffect(() => {
     getAllMessages();
+    scrollToBottom();
   }, [state.refresh]);
 
   return (
@@ -127,12 +135,20 @@ export const ChatRoom: React.FC = () => {
           <HeroChatBody isEmpty={messages.length === 0}>
             {messages.length === 0 && <p>Empty Chat</p>}
             {messages.map((item) => (
-              <ChatBubble
-                key={item._id}
-                message={item.message}
-                senderName={item.senderName}
-                myMessage={item.senderId === userData.id}
-              />
+              <div style={{
+                marginBottom: 20,
+              }}
+              >
+                <ChatBubble
+                  key={item._id}
+                  message={item.message}
+                  senderName={item.senderName}
+                  myMessage={item.senderId === userData.id}
+                />
+                <div
+                  ref={bottom}
+                />
+              </div>
             ))}
           </HeroChatBody>
           <HeroChatFooter>

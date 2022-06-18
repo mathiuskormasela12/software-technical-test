@@ -9,7 +9,7 @@ interface IBubleContainer {
 }
 
 export const BubbleContainer = styled.div<IBubleContainer>`
-		margin-bottom: 1.5rem;
+		// margin-bottom: 1.5rem;
 		display: flex;
 		flex-direction: column;
 

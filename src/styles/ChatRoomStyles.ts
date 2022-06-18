@@ -35,7 +35,7 @@ export const HeroChatHeaderCol = styled.div`
 	flex: 1;
 
 	&:last-child {
-		flex: 5;
+		flex: 9;
 		text-align: center;
 	}
 `;
