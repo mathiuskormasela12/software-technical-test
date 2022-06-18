@@ -12,4 +12,4 @@ This is a simple group chat website was written in React Js, Typescript and Redu
 [<img src="screenshoots/First-Screen.png" />](screenshoots/First-Screen.png)
 
 ### Chat Room Screen
-[<img src="screenshoots/First-Screen.png" />](screenshoots/First-Screen.png)
+[<img src="screenshoots/Second-Screen.png" />](screenshoots/First-Screen.png)
