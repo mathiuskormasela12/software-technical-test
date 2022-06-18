@@ -11,3 +11,12 @@ export const setMessages: SetMessagesFunc = (messages: IMessage[]) => ({
     },
   },
 });
+
+export const addMessages: SetMessagesFunc = (messages: IMessage[]) => ({
+  type: 'ADD_MESSAGES',
+  payload: {
+    data: {
+      messages,
+    },
+  },
+});

@@ -2,4 +2,4 @@
 
 export type AuthReduxTypes = 'SET_TOKEN';
 
-export type MessageReduxTypes = 'SET_MESSAGES';
+export type MessageReduxTypes = 'SET_MESSAGES' | 'ADD_MESSAGES';

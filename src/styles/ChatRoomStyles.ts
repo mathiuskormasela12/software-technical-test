@@ -10,6 +10,7 @@ export const HeroChatRoom = styled.div`
 
 export const RoomIdText = styled.h1`
 	font-size: 1.8rem;
+	text-transform: Capitalize;
 `;
 
 export const ExitText = styled.p`
@@ -47,6 +48,7 @@ export const HeroChatBody = styled.div<IHeroChatBody>`
 	height: 80%;
 	display: flex;
 	flex-direction: column;
+	overflow-y: scroll;
 
 	${(props) => {
     if (props.isEmpty) {

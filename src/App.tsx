@@ -10,6 +10,7 @@ import { GlobalStyles } from './styles';
 // import all views
 import { JoinChatRoom } from './views/JoinChatRoom';
 import { ChatRoom } from './views/ChatRoom';
+import PrivateRoute from './PrivateRoute';
 
 const App: React.FC = () => {
   const { store, persistor } = persistedStore;
@@ -20,7 +21,14 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/join" element={<JoinChatRoom />} />
-            <Route path="/" element={<ChatRoom />} />
+            <Route
+              path="/"
+              element={(
+                <PrivateRoute>
+                  <ChatRoom />
+                </PrivateRoute>
+							)}
+            />
           </Routes>
         </BrowserRouter>
         <GlobalStyles />

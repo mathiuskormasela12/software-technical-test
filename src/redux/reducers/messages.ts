@@ -16,6 +16,16 @@ const messagesReducer = (states = initialStates, action: IMessageReduxAction): I
       };
     }
 
+    case 'ADD_MESSAGES': {
+      return {
+        ...states,
+        messages: [
+          ...states.messages,
+          ...action.payload.data.messages,
+        ],
+      };
+    }
+
     default: {
       return {
         ...states,

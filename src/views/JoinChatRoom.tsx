@@ -1,8 +1,8 @@
 // ========== JoinChatRoom
 // import all modules
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   Control,
@@ -16,14 +16,18 @@ import {
   TextField,
   Title,
 } from '../styles';
+import Service from '../service';
+import { setMessages } from '../redux/actions/messages';
+import { setToken } from '../redux/actions/auth';
 
 // import all components
 import { Container, Head } from '../components';
-import { setMessages } from '../redux/actions/messages';
 
 export const JoinChatRoom: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const accessToken: string = useSelector((currentState: any) => (currentState.auth.accessToken));
+  const refreshToken: string = useSelector((currentState: any) => (currentState.auth.refreshToken));
 
   const [state, setState] = useState({
     username: '',
@@ -32,51 +36,6 @@ export const JoinChatRoom: React.FC = () => {
     errorMessage: '',
   });
 
-  const getAllMessages = () => {
-    if (state.username === '' || state.roomId === '') {
-      setState((current) => ({
-        ...current,
-        errorMessage: 'Username or romo id is required',
-      }));
-    } else {
-      setState((currentState) => ({
-        ...currentState,
-        loading: true,
-      }));
-
-      const data = [
-        {
-          _id: '39339033',
-          senderId: '9409053',
-          senderName: 'Mathius',
-          message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fringilla quam eu faci lisis mollis. ',
-        },
-        {
-          _id: '494942',
-          senderId: '340423',
-          senderName: 'Yerin',
-          message: 'Hello Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
-        },
-        {
-          _id: '3843111',
-          senderId: '2383829',
-          senderName: 'Yuju',
-          message: 'Hello Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
-        },
-      ];
-
-      dispatch(setMessages(data));
-
-      setTimeout(() => {
-        setState((currentState) => ({
-          ...currentState,
-          loading: false,
-        }));
-        navigate('/');
-      }, 1000);
-    }
-  };
-
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
     setState((currentState) => ({
       ...currentState,
@@ -84,10 +43,86 @@ export const JoinChatRoom: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    getAllMessages();
+  const getAllMessages = async (activeRoomId: string) => {
+    try {
+      const { data } = await Service.getAllMessages({
+        activeRoomId,
+      });
+      dispatch(setMessages(data && data.results ? data.results : []));
+      setState((current) => ({
+        ...current,
+        loading: true,
+      }));
+      navigate('/', {
+        state: {
+          activeRoomId,
+          roomId: state.roomId,
+        },
+      });
+    } catch (err: any) {
+      setState((current) => ({
+        ...current,
+        loading: false,
+        errorMessage: err.message,
+      }));
+      dispatch(setMessages([]));
+    }
   };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setState((current) => ({
+      ...current,
+      loading: true,
+    }));
+    if (state.username === '' || state.roomId === '') {
+      setState((current) => ({
+        ...current,
+        loading: false,
+        errorMessage: 'Username or room id is required',
+      }));
+    } else {
+      setState((current) => ({
+        ...current,
+        loading: false,
+      }));
+
+      try {
+        const { data } = await Service.joinRoom({
+          username: state.username,
+          roomId: state.roomId,
+        });
+        dispatch(setToken(data.results.accessToken, data.results.refreshToken));
+
+        if (data.success) {
+          getAllMessages(data.results.roomId);
+          setState((current) => ({
+            ...current,
+            loading: false,
+            errorMessage: '',
+          }));
+        }
+      } catch (err: any) {
+        setState((current) => ({
+          ...current,
+          loading: false,
+          errorMessage: err
+					&& err.response
+					&& err.response.data
+					&& err.response.data.message
+            ? err.response.data.message
+            : err && err.message
+              ? err.message
+              : 'Server Error',
+        }));
+        dispatch(setToken('', ''));
+      }
+    }
+  };
+
+  useEffect(() => {
+
+  }, [accessToken, refreshToken]);
 
   return (
     <JoinChatRoomHero>
@@ -118,7 +153,7 @@ export const JoinChatRoom: React.FC = () => {
                 </Control>
               </FormSection>
               <FormSection>
-                {state.errorMessage !== '' && <ErrorMessage>Username or Password is required</ErrorMessage>}
+                {state.errorMessage !== '' && <ErrorMessage>{state.errorMessage}</ErrorMessage>}
                 <Button type="button" onClick={(!state.loading) ? handleSubmit : () => {}}>
                   {state.loading ? 'Loading...' : 'Join'}
                 </Button>

@@ -39,7 +39,7 @@ const http = () => {
         if (err.response.status === 403 && !originalConfig._retry) {
           originalConfig._retry = true;
           try {
-            const { data } = await instances.post('/auth/access-token', {
+            const { data } = await instances.post('/users/access-token', {
               refreshToken,
             });
             dispatch(

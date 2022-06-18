@@ -1,8 +1,9 @@
 // ========== ChatRoom
 // import all modules
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import jwtDecode from 'jwt-decode';
 import {
   ExitText,
   HeroChatBody,
@@ -13,6 +14,10 @@ import {
   HeroChatRoomFlex,
   RoomIdText,
 } from '../styles';
+import Service from '../service';
+import { IMessage } from '../interfaces';
+import { setToken } from '../redux/actions/auth';
+import { addMessages, setMessages } from '../redux/actions/messages';
 
 // import all modules
 import {
@@ -21,14 +26,18 @@ import {
   MessageField,
   ChatBubble,
 } from '../components';
-import { IMessage } from '../interfaces';
 
 export const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     message: '',
+    fetchMessages: false,
+    refresh: false,
   });
   const messages: IMessage[] = useSelector((current: any) => current.messages.messages);
+  const accessToken: string = useSelector((current: any) => current.auth.accessToken);
+  const userData: any = jwtDecode(accessToken);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState((currentState) => ({
@@ -37,9 +46,70 @@ export const ChatRoom: React.FC = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    navigate('/join');
+  const handleLogout = async () => {
+    if (userData.id && userData.roomId) {
+      try {
+        await Service.exitRoom({
+          roomId: userData.roomId,
+          id: userData.id,
+        });
+        dispatch(setToken('', ''));
+        dispatch(setMessages([]));
+        navigate('/join');
+      } catch (err: any) {
+        // eslint-disable-next-line no-console
+        console.log(err.message);
+      }
+    }
   };
+
+  const handleSendMessage = async () => {
+    if (state.message !== '' && userData.roomId && userData.id) {
+      try {
+        const { data } = await Service.sendMessage({
+          message: state.message,
+          activeRoomId: userData.roomId,
+          senderId: userData.id,
+        });
+        dispatch(addMessages(data && data.results ? [data.results] : []));
+        setState((current) => ({
+          ...current,
+          message: '',
+        }));
+      } catch (err: any) {
+        // eslint-disable-next-line no-console
+        console.log(err.message);
+      }
+    }
+  };
+
+  const getAllMessages = async () => {
+    try {
+      const { data } = await Service.getAllMessages({
+        activeRoomId: userData.roomId,
+      });
+      dispatch(setMessages(data && data.results ? data.results : []));
+      setState((current) => ({
+        ...current,
+        loading: true,
+        refresh: !current.refresh,
+      }));
+    } catch (err: any) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      dispatch(setMessages([]));
+    }
+  };
+
+  useEffect(() => {
+    if (messages.length < 1) {
+      getAllMessages();
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllMessages();
+  }, [state.refresh]);
 
   return (
     <HeroChatRoom>
@@ -48,10 +118,10 @@ export const ChatRoom: React.FC = () => {
         <HeroChatRoomFlex>
           <HeroChatHeader>
             <HeroChatHeaderCol>
-              <ExitText onClick={() => navigate('/join')}>Exit</ExitText>
+              <ExitText onClick={handleLogout}>Exit</ExitText>
             </HeroChatHeaderCol>
             <HeroChatHeaderCol>
-              <RoomIdText>Mathius</RoomIdText>
+              <RoomIdText>{userData.roomName}</RoomIdText>
             </HeroChatHeaderCol>
           </HeroChatHeader>
           <HeroChatBody isEmpty={messages.length === 0}>
@@ -61,7 +131,7 @@ export const ChatRoom: React.FC = () => {
                 key={item._id}
                 message={item.message}
                 senderName={item.senderName}
-                myMessage={item.senderId === '340423'}
+                myMessage={item.senderId === userData.id}
               />
             ))}
           </HeroChatBody>
@@ -70,7 +140,7 @@ export const ChatRoom: React.FC = () => {
               type="text"
               placeholder="Message Here..."
               onChange={handleInput}
-              onSubmit={handleSubmit}
+              onSubmit={handleSendMessage}
               value={state.message}
             />
           </HeroChatFooter>

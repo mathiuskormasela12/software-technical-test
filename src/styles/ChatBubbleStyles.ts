@@ -53,4 +53,5 @@ export const BubbleText = styled.p`
 export const SenderName = styled.p`
 	font-size: 1rem;
 	margin-bottom: .5rem;
+	text-transform: capitalize;
 `;

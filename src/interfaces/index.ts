@@ -11,3 +11,7 @@ export * from './IMessageFieldProps';
 export * from './IChatBubbleProps';
 export * from './IMessageReduxStates';
 export * from './IMessage';
+export * from './IExitRoomParams';
+export * from './ICreateAccessTokenBody';
+export * from './ISendMessageBody';
+export * from './IGetAllMessagesParam';
