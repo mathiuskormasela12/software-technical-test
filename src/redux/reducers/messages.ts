@@ -20,8 +20,8 @@ const messagesReducer = (states = initialStates, action: IMessageReduxAction): I
       return {
         ...states,
         messages: [
-          ...states.messages,
           ...action.payload.data.messages,
+          ...states.messages,
         ],
       };
     }

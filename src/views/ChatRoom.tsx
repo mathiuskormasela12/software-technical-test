@@ -108,16 +108,9 @@ export const ChatRoom: React.FC = () => {
   };
 
   useEffect(() => {
-    if (messages.length < 1) {
-      getAllMessages();
-      scrollToBottom();
-    }
-  }, []);
-
-  useEffect(() => {
     getAllMessages();
     scrollToBottom();
-  }, [state.refresh]);
+  }, []);
 
   return (
     <HeroChatRoom>
@@ -135,12 +128,13 @@ export const ChatRoom: React.FC = () => {
           <HeroChatBody isEmpty={messages.length === 0}>
             {messages.length === 0 && <p>Empty Chat</p>}
             {messages.map((item) => (
-              <div style={{
-                marginBottom: 20,
-              }}
+              <div
+                key={item._id}
+                style={{
+                  marginBottom: 20,
+                }}
               >
                 <ChatBubble
-                  key={item._id}
                   message={item.message}
                   senderName={item.senderName}
                   myMessage={item.senderId === userData.id}

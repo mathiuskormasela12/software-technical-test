@@ -47,7 +47,7 @@ interface IHeroChatBody {
 export const HeroChatBody = styled.div<IHeroChatBody>`
 	height: 80%;
 	display: flex;
-	flex-direction: column;
+	flex-direction: column-reverse;
 	overflow-y: scroll;
 
 	${(props) => {
