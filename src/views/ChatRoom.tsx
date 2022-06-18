@@ -127,22 +127,20 @@ export const ChatRoom: React.FC = () => {
           </HeroChatHeader>
           <HeroChatBody isEmpty={messages.length === 0}>
             {messages.length === 0 && <p>Empty Chat</p>}
+            <div
+              ref={bottom}
+              style={{
+                marginBottom: 30,
+              }}
+            />
             {messages.map((item) => (
-              <div
-                key={item._id}
-                style={{
-                  marginBottom: 20,
-                }}
-              >
-                <ChatBubble
-                  message={item.message}
-                  senderName={item.senderName}
-                  myMessage={item.senderId === userData.id}
-                />
-                <div
-                  ref={bottom}
-                />
-              </div>
+              <ChatBubble
+                key={item._id.toString()}
+                message={item.message}
+                senderName={item.senderName}
+                myMessage={item.senderId === userData.id}
+              />
+
             ))}
           </HeroChatBody>
           <HeroChatFooter>

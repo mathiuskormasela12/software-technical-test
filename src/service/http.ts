@@ -1,6 +1,7 @@
 // ========== HTTP Service
 // import all modules
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 import { setToken } from '../redux/actions/auth';
 import persistedStore from '../redux/store';
 
@@ -48,12 +49,21 @@ const http = () => {
 
             return instances(originalConfig);
           } catch (_error: any) {
-            dispatch(setToken('', ''));
+            const { accessToken } = getState().auth;
+            const userData: any = jwtDecode(accessToken);
+            try {
+              await instances.put(`/users/exit/${userData.id}/${userData.roomId}`, {
+                refreshToken,
+              });
+              dispatch(setToken('', ''));
 
-            if (_error.response && _error.response.data) {
-              return Promise.reject(_error.response.data);
+              return instances(originalConfig);
+            } catch (_err: any) {
+              if (_err.response && _err.response.data) {
+                return Promise.reject(_err.response.data);
+              }
+              return Promise.reject(_err);
             }
-            return Promise.reject(_error);
           }
         }
         if (err.response.status === 400 && err.response.data) {
