@@ -15,3 +15,4 @@ export * from './IExitRoomParams';
 export * from './ICreateAccessTokenBody';
 export * from './ISendMessageBody';
 export * from './IGetAllMessagesParam';
+export * from './IRootProps';
